@@ -1,0 +1,55 @@
+
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: #172b4d;
+  background: linear-gradient(
+    135deg,
+    #eaf4ff 0%,
+    #f1edff 50%,
+    #f8fbff 100%
+  );
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.weather-card {
+  background: linear-gradient(
+    135deg,
+    #79aef2 0%,
+    #a9a2ed 100%
+  );
+  box-shadow: 0 16px 40px rgba(89, 111, 178, 0.16);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 30px rgba(83, 107, 151, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.weather-icon {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weather-icon {
+    animation: none;
+  }
+}
