@@ -700,86 +700,72 @@ export default function Home() {
           {/* 7 Day Forecast */}
 
           <section>
+  <div className="mb-5 flex items-center justify-between gap-3">
+    <h2 className="text-xl font-bold sm:text-2xl">
+      7日間の天気予報
+    </h2>
 
-            <div className="mb-5 flex items-center justify-between gap-3">
+    <span className="text-xs text-slate-500">
+      NEXT 7 DAYS
+    </span>
+  </div>
 
-              <h2 className="text-xl font-bold sm:text-2xl">
-                7日間の天気予報
-              </h2>
+  <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-7">
+    {weather.daily.time
+      .slice(0, 7)
+      .map((date, index) => {
+        const info = getWeatherInfo(
+          weather.daily.weather_code[index]
+        );
 
-              <span className="text-xs text-slate-500">
-                NEXT 7 DAYS
+        return (
+          <div
+            key={date}
+            className="glass-card flex min-w-0 flex-col items-center justify-between gap-3 rounded-2xl p-3 text-center sm:p-4"
+          >
+            <p className="text-sm font-bold">
+              {formatDate(date)}
+            </p>
+
+            <Image
+              src={info.icon}
+              alt={info.label}
+              width={72}
+              height={72}
+              className="my-4 h-14 w-14 object-contain sm:h-16 sm:w-16"
+            />
+
+            <p className="min-h-10 text-sm text-slate-500">
+              {info.label}
+            </p>
+
+            <p className="mt-3 font-bold">
+              {Math.round(
+                weather.daily.temperature_2m_max[index]
+              )}
+              °
+
+              <span className="text-slate-400">
+                {" / "}
+                {Math.round(
+                  weather.daily.temperature_2m_min[index]
+                )}
+                °
               </span>
+            </p>
 
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-
-              {weather.daily.time
-                .slice(0, 7)
-                .map((date, index) => {
-                  const info = getWeatherInfo(
-                    weather.daily.weather_code[index]
-                  );
-
-                  return (
-                    <div
-                      key={date}
-                      className="glass-card flex min-w-0 flex-col items-center rounded-2xl p-4 text-center sm:p-6"
-                    >
-
-                      <p className="text-sm font-bold">
-                        {formatDate(date)}
-                      </p>
-
-                      <Image
-                        src={info.icon}
-                        alt={info.label}
-                        width={72}
-                        height={72}
-                        className="my-5 h-16 w-16 object-contain"
-                      />
-
-                      <p className="min-h-10 text-sm text-slate-500">
-                        {info.label}
-                      </p>
-
-                      <p className="mt-4 font-bold">
-                        {Math.round(
-                          weather.daily.temperature_2m_max[
-                            index
-                          ]
-                        )}
-                        °
-
-                        <span className="text-slate-400">
-                          {" / "}
-                          {Math.round(
-                            weather.daily.temperature_2m_min[
-                              index
-                            ]
-                          )}
-                          °
-                        </span>
-                      </p>
-
-                      <p className="mt-3 text-sm text-blue-500">
-                        ☔{" "}
-                        {
-                          weather.daily
-                            .precipitation_probability_max[
-                            index
-                          ]
-                        }
-                        %
-                      </p>
-
-                    </div>
-                  );
-                })}
-
-            </div>
-
+            <p className="mt-2 text-sm text-blue-500">
+              ☔{" "}
+              {
+                weather.daily
+                  .precipitation_probability_max[index]
+              }
+              %
+            </p>
+          </div>
+        );
+      })}
+  </div>
           </section>
 
         </div>
