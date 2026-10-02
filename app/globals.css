@@ -289,3 +289,10 @@ body {
     object-fit: contain;
   }
 }
+
+/* GPS Button */
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}

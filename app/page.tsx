@@ -195,6 +195,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState("");
+  
+  const [locationLoading, setLocationLoading] = useState(false);
 
   /* ========================================
      Fetch Weather
@@ -333,6 +335,89 @@ export default function Home() {
   }
 
   /* ========================================
+   Current Location (GPS)
+======================================== */
+
+  function getCurrentLocation() {
+  if (!navigator.geolocation) {
+    setError("このブラウザは位置情報に対応していません。");
+    return;
+  }
+
+  setLocationLoading(true);
+  setError("");
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude } = position.coords;
+
+      try {
+        // GPS 座標から都市名を取得
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ja`
+        );
+
+        if (!response.ok) {
+          throw new Error("地名を取得できませんでした。");
+        }
+
+        const data = await response.json();
+
+        const address = data.address ?? {};
+
+        const name =
+          address.city ||
+          address.town ||
+          address.village ||
+          address.municipality ||
+          address.county ||
+          data.name ||
+          "現在地";
+
+        setCity({
+          name,
+          latitude,
+          longitude,
+        });
+
+        setSearch("");
+      } catch {
+        // 地名が取得できなくても天気は表示する
+        setCity({
+          name: "現在地",
+          latitude,
+          longitude,
+        });
+      } finally {
+        setLocationLoading(false);
+      }
+    },
+    (error) => {
+      setLocationLoading(false);
+
+      switch (error.code) {
+        case 1:
+          setError("位置情報の使用が許可されていません。");
+          break;
+        case 2:
+          setError("現在地を取得できませんでした。");
+          break;
+        case 3:
+          setError("位置情報の取得がタイムアウトしました。");
+          break;
+        default:
+          setError("位置情報の取得に失敗しました。");
+      }
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 60000,
+    }
+  );
+  }
+
+  /* ========================================
      Current Weather Information
   ======================================== */
 
@@ -438,6 +523,24 @@ export default function Home() {
               →
             </button>
           </div>
+
+          {/* Current Location */}
+
+          <button
+  type="button"
+  onClick={getCurrentLocation}
+  disabled={locationLoading}
+  className="glass-card flex w-full items-center
+             justify-center gap-2 rounded-2xl
+             px-4 py-3 text-sm font-semibold
+             text-blue-600 transition
+             hover:bg-blue-50
+             disabled:opacity-60
+             sm:w-auto"
+>
+  📍
+  {locationLoading ? "取得中..." : "現在地"}
+          </button>
 
           {/* City Selector */}
 
